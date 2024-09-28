@@ -9,6 +9,12 @@ public class Player : MonoBehaviour
     public float accelerationTime;
     public float decelerationTime;
 
+    public int radarCirclePoints;
+    public float radarRadius;
+
+    public int numberOfPowerups;
+    public float powerupsRadius;
+
     private float acceleration;
     private float deceleration;
     private Vector2 velocity;
@@ -17,6 +23,7 @@ public class Player : MonoBehaviour
     public Transform enemyTransform;
     public GameObject bombPrefab;
     public Transform bombsTransform;
+    public GameObject powerupPrefab;
 
     void Start()
     {
@@ -62,6 +69,13 @@ public class Player : MonoBehaviour
         }
 
         PlayerMovement(input.normalized);
+
+        EnemyRadar(radarCirclePoints, radarRadius);
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            SpawnPowerups(numberOfPowerups, powerupsRadius);
+        }
     }
 
     private void PlayerMovement(Vector2 inputVector)
@@ -103,5 +117,33 @@ public class Player : MonoBehaviour
         velocity.y = Mathf.Clamp(velocity.y, -maxSpeed, maxSpeed);
 
         transform.position += (Vector3)velocity * Time.deltaTime;
+    }
+
+    private void EnemyRadar(int circlePoints, float radius)
+    {
+        Color lineColor = (transform.position - enemyTransform.position).magnitude < radius ? Color.red : Color.green;
+
+        Vector2[] points = new Vector2[circlePoints];
+        for (int i = 0; i < circlePoints; i++)
+        {
+            float theta = 360 / circlePoints * i;
+            points[i] = new Vector2(Mathf.Cos(theta * Mathf.Deg2Rad), Mathf.Sin(theta * Mathf.Deg2Rad)) * radius + (Vector2)transform.position;
+
+            if (i > 0)
+            {
+                float distanceToEnemy = (transform.position - enemyTransform.position).magnitude;
+                Debug.DrawLine(points[i - 1], points[i], lineColor);
+            }
+        }
+        Debug.DrawLine(points[circlePoints - 1], points[0], lineColor);
+    }
+
+    private void SpawnPowerups(int numberOfPowerups, float radius)
+    {
+        for (int i = 0; i < numberOfPowerups; i++)
+        {
+            float theta = 360 / numberOfPowerups * i;
+            Instantiate(powerupPrefab, new Vector3(Mathf.Cos(theta * Mathf.Deg2Rad), Mathf.Sin(theta * Mathf.Deg2Rad)) * radius + transform.position, Quaternion.identity);
+        }
     }
 }
