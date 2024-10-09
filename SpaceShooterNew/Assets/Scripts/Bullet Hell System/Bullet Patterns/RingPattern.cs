@@ -8,10 +8,10 @@ public class RingPattern : BulletPattern
 
     public RingPattern(Transform spawnPoint, GameObject bulletPrefab, float direction, int density)
     {
-        _spawnPoint = spawnPoint;
-        _bulletPrefab = bulletPrefab;
-        _direction = direction;
-        _density = density;
+        this._spawnPoint = spawnPoint;
+        this._bulletPrefab = bulletPrefab;
+        this.direction = direction;
+        this._density = density;
     }
 
     public override void Spawn()
@@ -20,7 +20,7 @@ public class RingPattern : BulletPattern
         for (int i = 0; i < _density; i++)
         {
             float deltaAngle = i * spacing;
-            Object.Instantiate(_bulletPrefab, _spawnPoint.position, Quaternion.Euler(new(0, 0, _direction + deltaAngle)));
+            Object.Instantiate(_bulletPrefab, _spawnPoint.position + (Vector3)offset, Quaternion.Euler(new(0, 0, direction + deltaAngle)));
         }
     }
 }

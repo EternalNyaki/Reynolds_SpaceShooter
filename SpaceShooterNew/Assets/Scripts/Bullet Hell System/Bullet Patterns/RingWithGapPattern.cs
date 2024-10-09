@@ -8,7 +8,7 @@ public class RingWithGapPattern : RingPattern
 
     public RingWithGapPattern(Transform spawnPoint, GameObject bulletPrefab, float direction, int density, float gapSize) : base(spawnPoint, bulletPrefab, direction, density)
     {
-        _gapSize = gapSize;
+        this._gapSize = gapSize;
     }
 
     public override void Spawn()
@@ -17,9 +17,9 @@ public class RingWithGapPattern : RingPattern
         for (int i = 0; i < _density; i++)
         {
             float deltaAngle = i * spacing;
-            if (deltaAngle > spacing && 360 - deltaAngle > spacing)
+            if (deltaAngle > _gapSize / 2 && 360 - deltaAngle > _gapSize / 2)
             {
-                Object.Instantiate(_bulletPrefab, _spawnPoint.position, Quaternion.Euler(new(0, 0, _direction + deltaAngle)));
+                Object.Instantiate(_bulletPrefab, _spawnPoint.position + (Vector3)offset, Quaternion.Euler(new(0, 0, direction + deltaAngle)));
             }
         }
     }

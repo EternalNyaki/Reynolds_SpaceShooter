@@ -9,11 +9,11 @@ public class LinePattern : BulletPattern
 
     public LinePattern(Transform spawnPoint, GameObject bulletPrefab, float direction, int density, float length)
     {
-        _spawnPoint = spawnPoint;
-        _bulletPrefab = bulletPrefab;
-        _direction = direction;
-        _density = density;
-        _length = length;
+        this._spawnPoint = spawnPoint;
+        this._bulletPrefab = bulletPrefab;
+        this.direction = direction;
+        this._density = density;
+        this._length = length;
     }
 
     public override void Spawn()
@@ -22,8 +22,8 @@ public class LinePattern : BulletPattern
         for (int i = 0; i < _density; i++)
         {
             float distance = i * spacing - _length / 2;
-            Vector3 deltaPos = new Vector3(-Mathf.Sin((_direction - 90) * Mathf.Deg2Rad), -Mathf.Cos((_direction - 90) * Mathf.Deg2Rad)) * distance;
-            Object.Instantiate(_bulletPrefab, _spawnPoint.position + deltaPos, Quaternion.Euler(new(0, 0, _direction)));
+            Vector3 deltaPos = new Vector3(-Mathf.Sin((direction - 90) * Mathf.Deg2Rad), Mathf.Cos((direction - 90) * Mathf.Deg2Rad)) * distance;
+            Object.Instantiate(_bulletPrefab, _spawnPoint.position + (Vector3)offset + deltaPos, Quaternion.Euler(new(0, 0, direction)));
         }
     }
 }
