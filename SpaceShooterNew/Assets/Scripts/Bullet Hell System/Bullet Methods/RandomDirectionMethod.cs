@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 
+[MethodType(MethodType.Direction)]
 public class RandomDirectionMethod : BulletMethod
 {
     protected Func<float> _randomFunction;
@@ -23,9 +24,9 @@ public class RandomDirectionMethod : BulletMethod
         _randomFunction = randomFunction;
     }
 
-    protected override void Pattern()
+    protected internal override void AlterPattern()
     {
         _pattern.direction = _randomFunction();
-        _pattern.Spawn();
+        ;
     }
 }

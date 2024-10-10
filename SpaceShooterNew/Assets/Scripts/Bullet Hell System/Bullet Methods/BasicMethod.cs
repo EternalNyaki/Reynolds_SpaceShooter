@@ -1,7 +1,10 @@
+using System;
+using System.Buffers.Text;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[MethodType(MethodType.None)]
 public class BasicMethod : BulletMethod
 {
     public BasicMethod(float startTime, float duration, float frequency, BulletPattern pattern)
@@ -10,10 +13,5 @@ public class BasicMethod : BulletMethod
         _duration = duration;
         _interval = 1 / frequency;
         _pattern = pattern;
-    }
-
-    protected override void Pattern()
-    {
-        _pattern.Spawn();
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 
+[MethodType(MethodType.Position)]
 public class RandomPositionMethod : BulletMethod
 {
     protected Func<float> _randomFunction;
@@ -27,7 +28,7 @@ public class RandomPositionMethod : BulletMethod
         _axis = axis;
     }
 
-    protected override void Pattern()
+    protected internal override void AlterPattern()
     {
         Vector2 offset;
         switch (_axis)
@@ -45,6 +46,6 @@ public class RandomPositionMethod : BulletMethod
                 break;
         }
         _pattern.offset = offset;
-        _pattern.Spawn();
+        ;
     }
 }

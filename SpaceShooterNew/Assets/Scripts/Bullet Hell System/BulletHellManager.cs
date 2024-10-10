@@ -97,6 +97,11 @@ public class BulletHellManager : MonoBehaviour
                 selectedMethod = new RandomPositionMethod(0f, 10f, 2f, selectedPattern, -3f, 3f, RectTransform.Axis.Horizontal);
                 break;
 
+            case 5:
+                TargetedMethod targetedMethod = new TargetedMethod(0f, 10f, 2f, selectedPattern, target);
+                selectedMethod = BulletMethod.CombineMethods(targetedMethod, BulletMethod.CloneBaseValues(targetedMethod, new RandomPositionMethod(0f, 0f, 0f, null, -3f, 3f, RectTransform.Axis.Horizontal)));
+                break;
+
             default:
                 selectedMethod = new BasicMethod(0f, 10f, 2f, selectedPattern);
                 break;

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[MethodType(MethodType.Direction)]
 public class SpiralMethod : BulletMethod
 {
     protected float _deltaAngle;
@@ -15,9 +16,9 @@ public class SpiralMethod : BulletMethod
         _deltaAngle = deltaAngle;
     }
 
-    protected override void Pattern()
+    protected internal override void AlterPattern()
     {
-        _pattern.Spawn();
+        ;
         _pattern.direction += _deltaAngle;
     }
 }
