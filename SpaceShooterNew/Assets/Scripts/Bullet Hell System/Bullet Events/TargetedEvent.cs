@@ -1,13 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using Codice.ThemeImages;
 using UnityEngine;
 
-[MethodType(MethodType.Direction)]
-public class TargetedMethod : BulletMethod
+//Event for making patterns rotate towards a target
+[EventType(EventType.Direction)]
+public class TargetedEvent : BulletEvent
 {
     protected Transform _target;
 
-    public TargetedMethod(float startTime, float duration, float frequency, BulletPattern pattern, Transform target)
+    public TargetedEvent(float startTime, float duration, float frequency, BulletPattern pattern, Transform target)
     {
         _startTime = startTime;
         _duration = duration;
@@ -20,6 +22,5 @@ public class TargetedMethod : BulletMethod
     {
         float angleToTarget = Mathf.Atan2(_target.position.y - _pattern.GetSpawnPoint().y, _target.position.x - _pattern.GetSpawnPoint().x) * Mathf.Rad2Deg + 90;
         _pattern.direction = angleToTarget;
-        ;
     }
 }

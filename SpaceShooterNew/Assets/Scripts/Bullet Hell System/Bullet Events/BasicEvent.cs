@@ -4,10 +4,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[MethodType(MethodType.None)]
-public class BasicMethod : BulletMethod
+//Event for spawning patterns unaltered
+[EventType(EventType.None)]
+public class BasicEvent : BulletEvent
 {
-    public BasicMethod(float startTime, float duration, float frequency, BulletPattern pattern)
+    public BasicEvent(float startTime, float duration, float frequency, BulletPattern pattern)
     {
         _startTime = startTime;
         _duration = duration;

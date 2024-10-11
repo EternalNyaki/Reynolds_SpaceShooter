@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//Pattern for spawning a single bullet
 public class SinglePattern : BulletPattern
 {
     public SinglePattern(Transform spawnPoint, GameObject bulletPrefab, float direction)

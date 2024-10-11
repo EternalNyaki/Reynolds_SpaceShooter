@@ -1,24 +1,28 @@
 using System;
 using UnityEngine;
 
-[MethodType(MethodType.Position)]
-public class RandomPositionMethod : BulletMethod
+//Event for spawning patterns at a random position on a line
+[EventType(EventType.Position)]
+public class RandomPositionEvent : BulletEvent
 {
+    //Method for randomly choosing the direction of the pattern
     protected Func<float> _randomFunction;
 
+    //Whether the position should be randomized on the horizontal of vertical axis
     protected RectTransform.Axis _axis;
 
-    public RandomPositionMethod(float startTime, float duration, float frequency, BulletPattern pattern, float minDistance, float maxDistance, RectTransform.Axis axis)
+    public RandomPositionEvent(float startTime, float duration, float frequency, BulletPattern pattern, float minDistance, float maxDistance, RectTransform.Axis axis)
     {
         _startTime = startTime;
         _duration = duration;
         _interval = 1 / frequency;
         _pattern = pattern;
+        //HACK: For some reason explicitly declaring that we're using the UnityEngine.Random class requires the method be given anonymously
         _randomFunction = () => { return UnityEngine.Random.Range(minDistance, maxDistance); };
         _axis = axis;
     }
 
-    public RandomPositionMethod(float startTime, float duration, float frequency, BulletPattern pattern, Func<float> randomFunction, RectTransform.Axis axis)
+    public RandomPositionEvent(float startTime, float duration, float frequency, BulletPattern pattern, Func<float> randomFunction, RectTransform.Axis axis)
     {
         _startTime = startTime;
         _duration = duration;
@@ -46,6 +50,5 @@ public class RandomPositionMethod : BulletMethod
                 break;
         }
         _pattern.offset = offset;
-        ;
     }
 }

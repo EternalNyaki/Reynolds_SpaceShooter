@@ -19,7 +19,7 @@ public class BulletHellManager : MonoBehaviour
     private LineWithGapPattern lineWithGap;
 
     private BulletPattern selectedPattern;
-    private BulletMethod selectedMethod;
+    private BulletEvent selectedEvent;
 
     public Transform target;
 
@@ -33,12 +33,12 @@ public class BulletHellManager : MonoBehaviour
         lineWithGap = new LineWithGapPattern(transform, bulletPrefab, direction, density * 5, length, gapPosition, lineGapSize);
 
         selectedPattern = single;
-        selectedMethod = new BasicMethod(0f, 10f, 2f, selectedPattern);
+        selectedEvent = new BasicEvent(0f, 10f, 2f, selectedPattern);
     }
 
     public void RunPattern()
     {
-        StartCoroutine(selectedMethod.Run());
+        StartCoroutine(selectedEvent.Run());
     }
 
     public void OnPatternChanged(int value)
@@ -70,40 +70,40 @@ public class BulletHellManager : MonoBehaviour
                 break;
         }
 
-        selectedMethod.SetPattern(selectedPattern);
+        selectedEvent.SetPattern(selectedPattern);
     }
 
-    public void OnMethodChanged(int value)
+    public void OnEventChanged(int value)
     {
         switch (value)
         {
             case 0:
-                selectedMethod = new BasicMethod(0f, 10f, 2f, selectedPattern);
+                selectedEvent = new BasicEvent(0f, 10f, 2f, selectedPattern);
                 break;
 
             case 1:
-                selectedMethod = new SpiralMethod(0f, 10f, 2f, selectedPattern, density);
+                selectedEvent = new SpiralEvent(0f, 10f, 2f, selectedPattern, density);
                 break;
 
             case 2:
-                selectedMethod = new TargetedMethod(0f, 10f, 2f, selectedPattern, target);
+                selectedEvent = new TargetedEvent(0f, 10f, 2f, selectedPattern, target);
                 break;
 
             case 3:
-                selectedMethod = new RandomDirectionMethod(0f, 10f, 2f, selectedPattern, -45f, 45f);
+                selectedEvent = new RandomDirectionEvent(0f, 10f, 2f, selectedPattern, -45f, 45f);
                 break;
 
             case 4:
-                selectedMethod = new RandomPositionMethod(0f, 10f, 2f, selectedPattern, -3f, 3f, RectTransform.Axis.Horizontal);
+                selectedEvent = new RandomPositionEvent(0f, 10f, 2f, selectedPattern, -3f, 3f, RectTransform.Axis.Horizontal);
                 break;
 
             case 5:
-                TargetedMethod targetedMethod = new TargetedMethod(0f, 10f, 2f, selectedPattern, target);
-                selectedMethod = BulletMethod.CombineMethods(targetedMethod, BulletMethod.CloneBaseValues(targetedMethod, new RandomPositionMethod(0f, 0f, 0f, null, -3f, 3f, RectTransform.Axis.Horizontal)));
+                TargetedEvent targetedEvent = new TargetedEvent(0f, 10f, 2f, selectedPattern, target);
+                selectedEvent = BulletEvent.CombineEvents(targetedEvent, BulletEvent.CloneBaseValues(targetedEvent, new RandomPositionEvent(0f, 0f, 0f, null, -3f, 3f, RectTransform.Axis.Horizontal)));
                 break;
 
             default:
-                selectedMethod = new BasicMethod(0f, 10f, 2f, selectedPattern);
+                selectedEvent = new BasicEvent(0f, 10f, 2f, selectedPattern);
                 break;
         }
     }

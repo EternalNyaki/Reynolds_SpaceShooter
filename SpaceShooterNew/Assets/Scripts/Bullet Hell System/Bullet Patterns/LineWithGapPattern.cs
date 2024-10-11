@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//Pattern for spawn a line of bullets with a gap
 public class LineWithGapPattern : LinePattern
 {
+    //Size of the gap (in units)
     protected float _gapSize;
 
     public LineWithGapPattern(Transform spawnPoint, GameObject bulletPrefab, float direction, int density, float length, float gapPosition, float gapSize) : base(spawnPoint, bulletPrefab, direction, density, length)
     {
+        //Gap position is stored in the offset for more intuitive interaction with position-altering events
         this.offset.x = gapPosition;
         this._gapSize = gapSize;
     }

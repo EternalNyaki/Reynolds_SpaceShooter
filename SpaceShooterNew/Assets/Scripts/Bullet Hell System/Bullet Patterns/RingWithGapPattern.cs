@@ -2,8 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//Pattern for spawning a ring a bullets with a gap
 public class RingWithGapPattern : RingPattern
 {
+    //Size of the gap (in degrees)
     protected float _gapSize;
 
     public RingWithGapPattern(Transform spawnPoint, GameObject bulletPrefab, float direction, int density, float gapSize) : base(spawnPoint, bulletPrefab, direction, density)

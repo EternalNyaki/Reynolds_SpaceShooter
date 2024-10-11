@@ -2,8 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//Pattern for spawning a ring of bullets
 public class RingPattern : BulletPattern
 {
+    //Density of the ring (in bullets/360 degrees, functionally total bullets)
     protected int _density;
 
     public RingPattern(Transform spawnPoint, GameObject bulletPrefab, float direction, int density)
