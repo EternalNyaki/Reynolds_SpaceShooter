@@ -2,18 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StraightMovement : MonoBehaviour
+public class StraightMovement : BulletMovement
 {
-    public float speed;
-
-    // Update is called once per frame
-    void Update()
+    protected override void Move()
     {
         transform.position += -transform.up * speed * Time.deltaTime;
-    }
-
-    void OnBecameInvisible()
-    {
-        Destroy(gameObject);
     }
 }

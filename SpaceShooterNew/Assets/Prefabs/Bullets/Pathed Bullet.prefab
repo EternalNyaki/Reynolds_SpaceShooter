@@ -1,0 +1,125 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &1343200072803113956
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3410844652111144068, guid: b53e087a5f9a29f4fbe04dbb4121eafd, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3410844652111144068, guid: b53e087a5f9a29f4fbe04dbb4121eafd, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3410844652111144068, guid: b53e087a5f9a29f4fbe04dbb4121eafd, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3410844652111144068, guid: b53e087a5f9a29f4fbe04dbb4121eafd, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3410844652111144068, guid: b53e087a5f9a29f4fbe04dbb4121eafd, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3410844652111144068, guid: b53e087a5f9a29f4fbe04dbb4121eafd, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3410844652111144068, guid: b53e087a5f9a29f4fbe04dbb4121eafd, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3410844652111144068, guid: b53e087a5f9a29f4fbe04dbb4121eafd, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3410844652111144068, guid: b53e087a5f9a29f4fbe04dbb4121eafd, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3410844652111144068, guid: b53e087a5f9a29f4fbe04dbb4121eafd, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3759508396132738287, guid: b53e087a5f9a29f4fbe04dbb4121eafd, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3759508396132738287, guid: b53e087a5f9a29f4fbe04dbb4121eafd, type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3759508396132738287, guid: b53e087a5f9a29f4fbe04dbb4121eafd, type: 3}
+      propertyPath: m_Color.r
+      value: 0.89739513
+      objectReference: {fileID: 0}
+    - target: {fileID: 4753129282840674549, guid: b53e087a5f9a29f4fbe04dbb4121eafd, type: 3}
+      propertyPath: m_Name
+      value: Pathed Bullet
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 3515823839127708094, guid: b53e087a5f9a29f4fbe04dbb4121eafd, type: 3}
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4753129282840674549, guid: b53e087a5f9a29f4fbe04dbb4121eafd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2721662595622492580}
+  m_SourcePrefab: {fileID: 100100000, guid: b53e087a5f9a29f4fbe04dbb4121eafd, type: 3}
+--- !u!1 &6004002814463613713 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4753129282840674549, guid: b53e087a5f9a29f4fbe04dbb4121eafd, type: 3}
+  m_PrefabInstance: {fileID: 1343200072803113956}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2721662595622492580
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6004002814463613713}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0984d1dff1b49c446a409edf7906238f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 5
+  path:
+  - {x: 0, y: -1}
+  - {x: 1, y: -1}
+  - {x: 1, y: -2}
+  - {x: 0, y: -2}
+  - {x: 0, y: -3}
+  - {x: 1, y: -3}
+  - {x: 1, y: -4}
+  - {x: 0, y: -4}
+  - {x: 0, y: -5}
+  - {x: 1, y: -5}
+  - {x: 1, y: -6}
+  - {x: 0, y: -6}
+  - {x: 0, y: -7}
+  - {x: 1, y: -7}
+  - {x: 1, y: -8}
+  - {x: 0, y: -8}
+  - {x: 0, y: -9}
+  - {x: 1, y: -9}
+  - {x: 1, y: -10}
+  - {x: 0, y: -10}
+  - {x: 0, y: -11}
+  - {x: 1, y: -11}
+  - {x: 1, y: -12}
+  - {x: 0, y: -12}
+  - {x: 0, y: -13}
+  - {x: 1, y: -13}
+  - {x: 1, y: -14}
+  - {x: 0, y: -14}
+  - {x: 0, y: -15}
+  - {x: 1, y: -15}
+  - {x: 1, y: -16}

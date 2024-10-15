@@ -26,4 +26,10 @@ public abstract class BulletPattern
     {
         return (Vector2)_spawnPoint.position + offset;
     }
+
+    //HACK: For testing
+    public void SetBulletType(GameObject bullet)
+    {
+        _bulletPrefab = bullet;
+    }
 }

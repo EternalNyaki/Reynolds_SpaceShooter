@@ -4,35 +4,24 @@ using UnityEngine;
 
 public class BulletHellManager : MonoBehaviour
 {
-    public GameObject bulletPrefab;
     public float direction;
     public int density;
     public float ringGapSize;
     public float length;
     public float gapPosition;
     public float lineGapSize;
-
-    private SinglePattern single;
-    private RingPattern ring;
-    private RingWithGapPattern ringWithGap;
-    private LinePattern line;
-    private LineWithGapPattern lineWithGap;
+    public Transform target;
+    public GameObject[] bulletPrefabs;
 
     private BulletPattern selectedPattern;
     private BulletEvent selectedEvent;
-
-    public Transform target;
+    private GameObject selectedBullet;
 
     // Start is called before the first frame update
     void Start()
     {
-        single = new SinglePattern(transform, bulletPrefab, direction);
-        ring = new RingPattern(transform, bulletPrefab, direction, density);
-        ringWithGap = new RingWithGapPattern(transform, bulletPrefab, direction, density * 5, ringGapSize);
-        line = new LinePattern(transform, bulletPrefab, direction, density, length);
-        lineWithGap = new LineWithGapPattern(transform, bulletPrefab, direction, density * 5, length, gapPosition, lineGapSize);
-
-        selectedPattern = single;
+        selectedBullet = bulletPrefabs[0];
+        selectedPattern = new SinglePattern(transform, selectedBullet, direction);
         selectedEvent = new BasicEvent(0f, 10f, 2f, selectedPattern);
     }
 
@@ -46,27 +35,27 @@ public class BulletHellManager : MonoBehaviour
         switch (value)
         {
             case 0:
-                selectedPattern = single;
+                selectedPattern = new SinglePattern(transform, selectedBullet, direction);
                 break;
 
             case 1:
-                selectedPattern = ring;
+                selectedPattern = new RingPattern(transform, selectedBullet, direction, density);
                 break;
 
             case 2:
-                selectedPattern = ringWithGap;
+                selectedPattern = new RingWithGapPattern(transform, selectedBullet, direction, density * 5, ringGapSize);
                 break;
 
             case 3:
-                selectedPattern = line;
+                selectedPattern = new LinePattern(transform, selectedBullet, direction, 1, length);
                 break;
 
             case 4:
-                selectedPattern = lineWithGap;
+                selectedPattern = new LineWithGapPattern(transform, selectedBullet, direction, density * 5, length, gapPosition, lineGapSize);
                 break;
 
             default:
-                selectedPattern = single;
+                selectedPattern = new SinglePattern(transform, selectedBullet, direction);
                 break;
         }
 
@@ -106,5 +95,18 @@ public class BulletHellManager : MonoBehaviour
                 selectedEvent = new BasicEvent(0f, 10f, 2f, selectedPattern);
                 break;
         }
+    }
+
+    public void OnBulletTypeChanged(int value)
+    {
+        if (value < bulletPrefabs.Length)
+        {
+            selectedBullet = bulletPrefabs[value];
+        }
+        else
+        {
+            selectedBullet = bulletPrefabs[0];
+        }
+        selectedPattern.SetBulletType(selectedBullet);
     }
 }
