@@ -3118,7 +3118,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Bullet Method:'
+  m_text: 'Bullet Event:'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3145,7 +3145,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 25
+  m_fontSize: 26.85
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -4525,7 +4525,7 @@ GameObject:
   - component: {fileID: 2019972633}
   - component: {fileID: 2019972632}
   m_Layer: 5
-  m_Name: Bullet Method Selection
+  m_Name: Bullet Event Selection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4613,7 +4613,7 @@ MonoBehaviour:
       m_Image: {fileID: 0}
     - m_Text: Random Position
       m_Image: {fileID: 0}
-    - m_Text: Random Direction + Position
+    - m_Text: Random Direction + Targeted
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:

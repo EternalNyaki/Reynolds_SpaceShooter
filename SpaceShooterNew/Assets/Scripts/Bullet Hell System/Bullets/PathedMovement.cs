@@ -12,7 +12,7 @@ public class PathedMovement : BulletMovement
         //Rotate path to match transform rotation
         for (int i = 0; i < path.Count; i++)
         {
-            path[i] = RotateVectorByAngle(transform.rotation.eulerAngles.z, path[i]);
+            path[i] = RotateVectorByAngle(transform.rotation.eulerAngles.z * Mathf.Deg2Rad, path[i]);
         }
 
         StartCoroutine(FollowPath());
