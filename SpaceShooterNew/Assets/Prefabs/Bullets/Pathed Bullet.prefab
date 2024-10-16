@@ -90,7 +90,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0984d1dff1b49c446a409edf7906238f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
+  speed: 7
   path:
   - {x: 0, y: -1}
   - {x: 1, y: -1}

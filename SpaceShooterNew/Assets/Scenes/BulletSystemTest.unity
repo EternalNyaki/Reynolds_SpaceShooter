@@ -2666,9 +2666,9 @@ MonoBehaviour:
   direction: 0
   density: 10
   ringGapSize: 90
-  length: 5
+  length: 20
   gapPosition: 0
-  lineGapSize: 2
+  lineGapSize: 4
   target: {fileID: 1147955168}
   bulletPrefabs:
   - {fileID: 4753129282840674549, guid: b53e087a5f9a29f4fbe04dbb4121eafd, type: 3}

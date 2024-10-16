@@ -18,26 +18,16 @@ public class TargetedMovement : StraightMovement
 
     protected override void Move()
     {
-        Vector2 vectorToTarget = target.position - transform.position;
+        Vector2 vectorToTarget = (target.position - transform.position).normalized;
         float angleToTarget = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg + 90;
-        float rotation;
-        if (angleToTarget > transform.rotation.z)
+        int direction = (int)Mathf.Sign(angleToTarget - transform.rotation.z);
+        float rotation = direction * rotationSpeed * Time.deltaTime;
+        if (direction == 1 ? transform.rotation.z + rotation > angleToTarget : transform.rotation.z + rotation < angleToTarget)
         {
-            rotation = rotationSpeed * Time.deltaTime;
-            if (transform.rotation.z + rotation > angleToTarget)
-            {
-                rotation = angleToTarget - transform.rotation.z;
-            }
-        }
-        else
-        {
-            rotation = -rotationSpeed * Time.deltaTime;
-            if (transform.rotation.z + angleToTarget < angleToTarget)
-            {
-                rotation = angleToTarget - transform.rotation.z;
-            }
+            rotation = angleToTarget - transform.rotation.z;
         }
         transform.Rotate(new(0, 0, rotation));
+
         base.Move();
     }
 }

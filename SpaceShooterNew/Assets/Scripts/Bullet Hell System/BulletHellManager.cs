@@ -51,7 +51,7 @@ public class BulletHellManager : MonoBehaviour
                 break;
 
             case 4:
-                selectedPattern = new LineWithGapPattern(transform, selectedBullet, direction, density * 5, length, gapPosition, lineGapSize);
+                selectedPattern = new LineWithGapPattern(transform, selectedBullet, direction, density, length, gapPosition, lineGapSize);
                 break;
 
             default:
@@ -83,12 +83,12 @@ public class BulletHellManager : MonoBehaviour
                 break;
 
             case 4:
-                selectedEvent = new RandomPositionEvent(0f, 10f, 2f, selectedPattern, -3f, 3f, RectTransform.Axis.Horizontal);
+                selectedEvent = new RandomPositionEvent(0f, 10f, 2f, selectedPattern, -5f, 5f, RectTransform.Axis.Horizontal);
                 break;
 
             case 5:
-                TargetedEvent targetedEvent = new TargetedEvent(0f, 10f, 2f, selectedPattern, target);
-                selectedEvent = BulletEvent.CombineEvents(targetedEvent, BulletEvent.CloneBaseValues(targetedEvent, new RandomPositionEvent(0f, 0f, 0f, null, -3f, 3f, RectTransform.Axis.Horizontal)));
+                RandomPositionEvent randomPositionEvent = new RandomPositionEvent(0f, 10f, 2f, selectedPattern, -5f, 5f, RectTransform.Axis.Horizontal);
+                selectedEvent = BulletEvent.CombineEvents(randomPositionEvent, BulletEvent.CloneBaseValues(randomPositionEvent, new TargetedEvent(0f, 10f, 2f, selectedPattern, target)));
                 break;
 
             default:
