@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//Script for having a bullet follow a set path
 public class PathedMovement : BulletMovement
 {
+    //Path for bullet to follow ((0, 0) is the bullet's spawn point)
     public List<Vector2> path;
 
     protected override void Initialize()
@@ -18,20 +20,28 @@ public class PathedMovement : BulletMovement
         StartCoroutine(FollowPath());
     }
 
+    //Coroutine to follow path
     private IEnumerator FollowPath()
     {
+        //Set starting position
         Vector2 startPosition = (Vector2)transform.position;
+
         while (path.Count > 0)
         {
+            //Lazy function for getting vector to the next point in the path
             Func<Vector2> toPoint = () => { return path[0] + startPosition - (Vector2)transform.position; };
             while (toPoint().magnitude - speed * Time.deltaTime > 0)
             {
+                //Move towards the next point in the path 
                 transform.position += (Vector3)toPoint().normalized * speed * Time.deltaTime;
                 yield return null;
             }
 
+            //Remove the first point in the path once the next movement would put the bullet past it
             path.RemoveAt(0);
         }
+
+        //Destroy the bullet once it's reached the end of the path
         Destroy(gameObject);
     }
 

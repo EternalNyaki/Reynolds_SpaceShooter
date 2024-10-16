@@ -83,5 +83,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
-  rotationSpeed: 5
+  rotationSpeed: 15
   targetTag: Player

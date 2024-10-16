@@ -1,17 +1,23 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//Base class for bullet movement scripts
 public abstract class BulletMovement : MonoBehaviour
 {
+    //Movement speed (in units/s)
     public float speed;
 
     private void Start()
     {
-        //StartCoroutine(DeathTimer());
         Initialize();
     }
 
+    /// <summary>
+    /// Initialization code goes here
+    /// Called in Start()
+    /// </summary>
     protected virtual void Initialize()
     {
 
@@ -23,6 +29,10 @@ public abstract class BulletMovement : MonoBehaviour
         Move();
     }
 
+    /// <summary>
+    /// Movement code goes here
+    /// Called every Update()
+    /// </summary>
     protected virtual void Move()
     {
 
@@ -30,12 +40,7 @@ public abstract class BulletMovement : MonoBehaviour
 
     void OnBecameInvisible()
     {
+        //Destroy bullet when it leaves the screen
         Destroy(gameObject);
     }
-
-    // private IEnumerator DeathTimer()
-    // {
-    //     yield return new WaitForSeconds(10f);
-    //     Destroy(gameObject);
-    // }
 }
