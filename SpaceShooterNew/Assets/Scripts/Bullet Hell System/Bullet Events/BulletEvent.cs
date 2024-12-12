@@ -6,12 +6,32 @@ using UnityEngine;
 /// <summary>
 /// Describes whether an event influences the direction or position of the underlying pattern, to ensure two patterns that influence the same property cannot be combined
 /// </summary>
-public enum EventType
+public enum EventDomain
 {
     None,
     Direction,
     Position,
     Both
+}
+
+public class EventDomainAttribute : Attribute
+{
+    public EventDomain type;
+
+    public EventDomainAttribute(EventDomain type)
+    {
+        this.type = type;
+    }
+}
+
+
+public enum EventType
+{
+    Basic,
+    Spiral,
+    Targeted,
+    RandomDirection,
+    RandomPosition
 }
 
 public class EventTypeAttribute : Attribute
@@ -28,6 +48,47 @@ public class EventTypeAttribute : Attribute
 //Bullet events control both the timing of the spawning of the underlying pattern, as well as any changes to its properties over time
 public abstract class BulletEvent
 {
+#if UNITY_EDITOR
+    //Public interface to properties for custom inspector
+    //For all functional purposes these DO NOT EXIST
+
+    /// <summary>
+    /// EDITOR-ONLY interface for start time (in seconds)
+    /// </summary>
+    public float startTime
+    {
+        get { return _startTime; }
+        set { _startTime = value; }
+    }
+
+    /// <summary>
+    /// EDITOR-ONLY interface for duration (in seconds)
+    /// </summary>
+    public float duration
+    {
+        get { return _duration; }
+        set { _duration = value; }
+    }
+
+    /// <summary>
+    /// EDITOR-ONLY interface for frequency (cycles per second)
+    /// </summary>
+    public float frequency
+    {
+        get { return 1 / _interval; }
+        set { _interval = 1 / frequency; }
+    }
+
+    /// <summary>
+    /// EDITOR-ONLY interface for bullet pattern
+    /// </summary>
+    public BulletPattern pattern
+    {
+        get { return _pattern; }
+        set { _pattern = value; }
+    }
+#endif
+
     //How long the event should wait to start after being run (in seconds)
     protected internal float _startTime;
     //How long the event should last (in seconds)
@@ -86,21 +147,21 @@ public abstract class BulletEvent
 
     /// <summary>
     /// Created a CombinedEvent with the properties of both events
-    /// Events must both have different EventTypes (direction or position) and have the same base values
+    /// Events must both have different EventDomains (direction or position) and have the same base values
     /// </summary>
     /// <param name="event1"></param>
     /// <param name="event2"></param>
     /// <returns> A CombinedEvent with the properties of both events </returns>
     public static CombinedEvent CombineEvents(BulletEvent event1, BulletEvent event2)
     {
-        EventType m1Type = event1.GetType().GetCustomAttribute<EventTypeAttribute>().type;
-        EventType m2Type = event2.GetType().GetCustomAttribute<EventTypeAttribute>().type;
+        EventDomain m1Type = event1.GetType().GetCustomAttribute<EventDomainAttribute>().type;
+        EventDomain m2Type = event2.GetType().GetCustomAttribute<EventDomainAttribute>().type;
 
         if (!AreBasePropertiesEqual(event1, event2))
         {
             Debug.LogError("Cannot combine Events: Events have different base properties. Use BulletEvent.CloneBaseValues to give the second Event the properties of the first");
         }
-        if (m1Type == EventType.None || m2Type == EventType.None)
+        if (m1Type == EventDomain.None || m2Type == EventDomain.None)
         {
             Debug.LogWarning("Cannot combine Events: One or both Events have a type of None.");
         }
@@ -108,11 +169,11 @@ public abstract class BulletEvent
         {
             Debug.LogWarning("Cannot combine Events: Both Events have the same type");
         }
-        else if (m1Type == EventType.Both || m2Type == EventType.Both)
+        else if (m1Type == EventDomain.Both || m2Type == EventDomain.Both)
         {
             Debug.LogWarning("Cannot combine Events: One of both Events have a type of Both.");
         }
-        else if ((m1Type == EventType.Direction && m2Type == EventType.Position) || (m1Type == EventType.Position && m2Type == EventType.Direction))
+        else if ((m1Type == EventDomain.Direction && m2Type == EventDomain.Position) || (m1Type == EventDomain.Position && m2Type == EventDomain.Direction))
         {
             return new CombinedEvent(event1, event2);
         }
@@ -133,7 +194,7 @@ public abstract class BulletEvent
 }
 
 //Class for a bullet event that is a combination of two other event types
-[EventType(EventType.Both)]
+[EventDomain(EventDomain.Both)]
 public class CombinedEvent : BulletEvent
 {
     BulletEvent _event1;

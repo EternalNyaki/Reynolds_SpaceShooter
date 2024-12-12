@@ -3,30 +3,40 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //Pattern for spawning bullets in a line perpendicular to their direction
+[PatternType(PatternType.Line)]
 public class LinePattern : BulletPattern
 {
     //Density of the line (in bullets/unit)
-    protected int _density;
+    public int density;
     //Length of the line (in units)
-    protected float _length;
+    public float length;
+
+    public LinePattern()
+    {
+        spawnPoint = null;
+        bulletPrefab = null;
+        direction = 0f;
+        density = 0;
+        length = 0f;
+    }
 
     public LinePattern(Transform spawnPoint, GameObject bulletPrefab, float direction, int density, float length)
     {
-        this._spawnPoint = spawnPoint;
-        this._bulletPrefab = bulletPrefab;
+        this.spawnPoint = spawnPoint;
+        this.bulletPrefab = bulletPrefab;
         this.direction = direction;
-        this._density = density;
-        this._length = length;
+        this.density = density;
+        this.length = length;
     }
 
     public override void Spawn()
     {
-        float spacing = 1 / (float)_density;
-        for (int i = 0; i < _density * _length; i++)
+        float spacing = 1 / (float)density;
+        for (int i = 0; i < density * length; i++)
         {
-            float distance = i * spacing - _length / 2;
+            float distance = i * spacing - length / 2;
             Vector3 deltaPos = new Vector3(-Mathf.Sin((direction - 90) * Mathf.Deg2Rad), Mathf.Cos((direction - 90) * Mathf.Deg2Rad)) * distance;
-            Object.Instantiate(_bulletPrefab, _spawnPoint.position + (Vector3)offset + deltaPos, Quaternion.Euler(new(0, 0, direction)));
+            Object.Instantiate(bulletPrefab, spawnPoint.position + (Vector3)offset + deltaPos, Quaternion.Euler(new(0, 0, direction)));
         }
     }
 }
