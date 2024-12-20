@@ -14,15 +14,17 @@ public class LinePattern : BulletPattern
     public LinePattern()
     {
         spawnPoint = null;
+        offset = Vector2.zero;
         bulletPrefab = null;
         direction = 0f;
         density = 0;
         length = 0f;
     }
 
-    public LinePattern(Transform spawnPoint, GameObject bulletPrefab, float direction, int density, float length)
+    public LinePattern(Transform spawnPoint, Vector2 offset, GameObject bulletPrefab, float direction, int density, float length)
     {
         this.spawnPoint = spawnPoint;
+        this.offset = offset;
         this.bulletPrefab = bulletPrefab;
         this.direction = direction;
         this.density = density;

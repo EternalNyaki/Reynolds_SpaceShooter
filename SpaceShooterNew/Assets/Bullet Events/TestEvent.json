@@ -1,0 +1,46 @@
+[
+  {
+    "eventType": 0,
+    "startTime": 0.0,
+    "duration": 2.0,
+    "interval": 0.25,
+    "pattern": {
+      "patternType": 0,
+      "spawnPoint": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "bulletType": 0,
+      "direction": 15.0,
+      "additionalParams": []
+    },
+    "additionalParams": []
+  },
+  {
+    "eventType": 1,
+    "startTime": 2.5,
+    "duration": 1.5,
+    "interval": 0.2,
+    "pattern": {
+      "patternType": 1,
+      "spawnPoint": {
+        "x": 1.0,
+        "y": 0.0
+      },
+      "bulletType": 0,
+      "direction": 0.0,
+      "additionalParams": [
+        {
+          "Key": "density",
+          "Value": 18
+        }
+      ]
+    },
+    "additionalParams": [
+      {
+        "Key": "_deltaAngle",
+        "Value": 2.0
+      }
+    ]
+  }
+]

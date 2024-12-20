@@ -9,13 +9,15 @@ public class SinglePattern : BulletPattern
     public SinglePattern()
     {
         spawnPoint = null;
+        offset = Vector2.zero;
         bulletPrefab = null;
         direction = 0f;
     }
 
-    public SinglePattern(Transform spawnPoint, GameObject bulletPrefab, float direction)
+    public SinglePattern(Transform spawnPoint, Vector2 offset, GameObject bulletPrefab, float direction)
     {
         this.spawnPoint = spawnPoint;
+        this.offset = offset;
         this.bulletPrefab = bulletPrefab;
         this.direction = direction;
     }

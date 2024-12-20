@@ -1,10 +1,13 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
 /// <summary>
-/// Describes whether an event influences the direction or position of the underlying pattern, to ensure two patterns that influence the same property cannot be combined
+/// Describes whether an event influences the direction or position of the underlying pattern, 
+/// to ensure two patterns that influence the same field cannot be combined
 /// </summary>
 public enum EventDomain
 {
@@ -24,7 +27,7 @@ public class EventDomainAttribute : Attribute
     }
 }
 
-
+[Serializable]
 public enum EventType
 {
     Basic,
@@ -34,6 +37,7 @@ public enum EventType
     RandomPosition
 }
 
+[Serializable]
 public class EventTypeAttribute : Attribute
 {
     public EventType type;
@@ -45,66 +49,93 @@ public class EventTypeAttribute : Attribute
 }
 
 //Underlying class for all bullet events
-//Bullet events control both the timing of the spawning of the underlying pattern, as well as any changes to its properties over time
+//Bullet events control both the timing of the spawning of the underlying pattern, as well as any changes to its Fields over time
 public abstract class BulletEvent
 {
-#if UNITY_EDITOR
-    //Public interface to properties for custom inspector
-    //For all functional purposes these DO NOT EXIST
-
-    /// <summary>
-    /// EDITOR-ONLY interface for start time (in seconds)
-    /// </summary>
-    public float startTime
-    {
-        get { return _startTime; }
-        set { _startTime = value; }
-    }
-
-    /// <summary>
-    /// EDITOR-ONLY interface for duration (in seconds)
-    /// </summary>
-    public float duration
-    {
-        get { return _duration; }
-        set { _duration = value; }
-    }
-
-    /// <summary>
-    /// EDITOR-ONLY interface for frequency (cycles per second)
-    /// </summary>
-    public float frequency
-    {
-        get { return 1 / _interval; }
-        set { _interval = 1 / frequency; }
-    }
-
-    /// <summary>
-    /// EDITOR-ONLY interface for bullet pattern
-    /// </summary>
-    public BulletPattern pattern
-    {
-        get { return _pattern; }
-        set { _pattern = value; }
-    }
-#endif
-
     //How long the event should wait to start after being run (in seconds)
-    protected internal float _startTime;
+    protected float _startTime;
     //How long the event should last (in seconds)
-    protected internal float _duration;
+    protected float _duration;
     //Amount of time between pattern spawns (in seconds)
-    protected internal float _interval;
+    protected float _interval;
 
     //The pattern to be spawned
-    protected internal BulletPattern _pattern;
+    protected BulletPattern _pattern;
 
-    //For alterations to the base properties of the pattern
-    //Called before the pattern is spawned
-    protected internal virtual void AlterPattern()
+    [Serializable]
+    public class SerializableBulletEventData
     {
 
+        public EventType eventType;
+        public float startTime;
+        public float duration;
+        public float interval;
+        public BulletPattern.SerializableBulletPatternData pattern;
+        public KeyValuePair<string, object>[] additionalParams;
+
     }
+
+    [Serializable]
+    public class SerializableBulletEventData<T> : SerializableBulletEventData where T : BulletEvent
+    {
+        public SerializableBulletEventData(float startTime, float duration, float interval, BulletPattern.SerializableBulletPatternData pattern, KeyValuePair<string, object>[] additionalParams)
+        {
+            eventType = typeof(T).GetCustomAttribute<EventTypeAttribute>().type;
+
+            List<FieldInfo> eventTypeFields = new List<FieldInfo>();
+            foreach (FieldInfo field in typeof(T).GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+            {
+                if (typeof(BulletEvent).GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                                        .ToList().TrueForAll((FieldInfo f) => f.Name != field.Name) && field.FieldType != typeof(Transform))
+                {
+                    eventTypeFields.Add(field);
+                }
+            }
+            if (additionalParams.Length != eventTypeFields.Count) throw new ArgumentException($"Constructor arguments do not match the number of arguments of type {typeof(T).Name}");
+
+            this.startTime = startTime;
+            this.duration = duration;
+            this.interval = interval;
+            this.pattern = pattern;
+            this.additionalParams = additionalParams;
+        }
+
+        public SerializableBulletEventData(float startTime, float duration, float interval, BulletPattern.SerializableBulletPatternData pattern, params object[] additionalParams)
+        {
+            eventType = typeof(T).GetCustomAttribute<EventTypeAttribute>().type;
+
+            List<FieldInfo> eventTypeFields = new List<FieldInfo>();
+            foreach (FieldInfo field in typeof(T).GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+            {
+                if (typeof(BulletEvent).GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                                        .ToList().TrueForAll((FieldInfo f) => f.Name != field.Name) && field.FieldType != typeof(Transform))
+                {
+                    eventTypeFields.Add(field);
+                }
+            }
+            if (additionalParams.Length != eventTypeFields.Count) throw new ArgumentException($"Constructor arguments do not match the number of arguments of type {typeof(T).Name}");
+
+            this.startTime = startTime;
+            this.duration = duration;
+            this.interval = interval;
+            this.pattern = pattern;
+            List<KeyValuePair<string, object>> temp = new List<KeyValuePair<string, object>>();
+            for (int i = 0; i < additionalParams.Length; i++)
+            {
+                if (additionalParams[i].GetType() != eventTypeFields[i].FieldType)
+                {
+                    throw new ArgumentException($"Constructor arguments do not match the types of arguments of type {typeof(T).Name}");
+                }
+
+                temp.Add(new KeyValuePair<string, object>(eventTypeFields[i].Name, additionalParams[i]));
+            }
+            this.additionalParams = temp.ToArray();
+        }
+    }
+
+    //For alterations to the base Fields of the pattern
+    //Called before the pattern is spawned
+    protected virtual void AlterPattern() { }
 
     //Coroutine to run the event
     public IEnumerator Run()
@@ -114,21 +145,24 @@ public abstract class BulletEvent
             yield return new WaitForSeconds(_startTime);
         }
 
+        WaitForSeconds waitForInterval = new WaitForSeconds(_interval);
         float timeAtStart = Time.time;
-        //This is a do-while instead of a standard while to allow a duration of 0 to have the pattern run exactly once
+        //This is a do-while instead of a standard while to guarantee the pattern will always run at least once even with a duration of 0
         do
         {
             AlterPattern();
             _pattern.Spawn();
-            yield return new WaitForSeconds(_interval);
+            yield return waitForInterval;
         } while (timeAtStart + _duration >= Time.time);
     }
 
     //HACK: For testing, method should be removed for the final product
+#if UNITY_EDITOR
     public void SetPattern(BulletPattern pattern)
     {
         _pattern = pattern;
     }
+#endif
 
     /// <summary>
     /// Set the base values (start time, duration, interval, and pattern) of the cloningTarget to those of the eventToClone
@@ -145,78 +179,120 @@ public abstract class BulletEvent
         return cloningTarget;
     }
 
-    /// <summary>
-    /// Created a CombinedEvent with the properties of both events
-    /// Events must both have different EventDomains (direction or position) and have the same base values
-    /// </summary>
-    /// <param name="event1"></param>
-    /// <param name="event2"></param>
-    /// <returns> A CombinedEvent with the properties of both events </returns>
-    public static CombinedEvent CombineEvents(BulletEvent event1, BulletEvent event2)
+    public static BulletEvent FromEventData(SerializableBulletEventData data, Transform managerTransform = null, Transform targetTransform = null, GameObject bulletPrefab = null)
     {
-        EventDomain m1Type = event1.GetType().GetCustomAttribute<EventDomainAttribute>().type;
-        EventDomain m2Type = event2.GetType().GetCustomAttribute<EventDomainAttribute>().type;
+        BulletPattern pattern;
+        //TODO: Add/change bullet type logic
+        switch (data.pattern.patternType)
+        {
+            case PatternType.Single:
+                pattern = new SinglePattern(managerTransform, data.pattern.spawnPoint, bulletPrefab, data.pattern.direction);
+                break;
 
-        if (!AreBasePropertiesEqual(event1, event2))
-        {
-            Debug.LogError("Cannot combine Events: Events have different base properties. Use BulletEvent.CloneBaseValues to give the second Event the properties of the first");
-        }
-        if (m1Type == EventDomain.None || m2Type == EventDomain.None)
-        {
-            Debug.LogWarning("Cannot combine Events: One or both Events have a type of None.");
-        }
-        else if (m1Type == m2Type)
-        {
-            Debug.LogWarning("Cannot combine Events: Both Events have the same type");
-        }
-        else if (m1Type == EventDomain.Both || m2Type == EventDomain.Both)
-        {
-            Debug.LogWarning("Cannot combine Events: One of both Events have a type of Both.");
-        }
-        else if ((m1Type == EventDomain.Direction && m2Type == EventDomain.Position) || (m1Type == EventDomain.Position && m2Type == EventDomain.Direction))
-        {
-            return new CombinedEvent(event1, event2);
+            case PatternType.Ring:
+                pattern = new RingPattern(managerTransform, data.pattern.spawnPoint, bulletPrefab, data.pattern.direction, Convert.ToInt32(data.pattern.additionalParams[0].Value));
+                break;
+
+            case PatternType.RingWithGap:
+                pattern = new RingWithGapPattern(managerTransform, data.pattern.spawnPoint, bulletPrefab, data.pattern.direction, Convert.ToInt32(data.pattern.additionalParams[1].Value), Convert.ToSingle(data.pattern.additionalParams[0].Value));
+                break;
+
+            case PatternType.Line:
+                pattern = new LinePattern(managerTransform, data.pattern.spawnPoint, bulletPrefab, data.pattern.direction, Convert.ToInt32(data.pattern.additionalParams[0].Value), Convert.ToSingle(data.pattern.additionalParams[1].Value));
+                break;
+
+            case PatternType.LineWithGap:
+                pattern = new LineWithGapPattern(managerTransform, data.pattern.spawnPoint, bulletPrefab, data.pattern.direction, Convert.ToInt32(data.pattern.additionalParams[1].Value), Convert.ToSingle(data.pattern.additionalParams[2].Value), data.pattern.spawnPoint.x, Convert.ToSingle(data.pattern.additionalParams[0].Value));
+                break;
+
+            default:
+                throw new ArgumentException("Invalid pattern type");
         }
 
-        return null;
+        BulletEvent output;
+        switch (data.eventType)
+        {
+            case EventType.Basic:
+                output = new BasicEvent(data.startTime, data.duration, data.interval, pattern);
+                break;
+
+            case EventType.Spiral:
+                output = new SpiralEvent(data.startTime, data.duration, data.interval, pattern, Convert.ToSingle(data.additionalParams[0].Value));
+                break;
+
+            case EventType.Targeted:
+                output = new TargetedEvent(data.startTime, data.duration, data.interval, pattern, targetTransform);
+                break;
+
+            case EventType.RandomDirection:
+                output = new RandomDirectionEvent(data.startTime, data.duration, data.interval, pattern, Convert.ToSingle(data.additionalParams[0].Value), Convert.ToSingle(data.additionalParams[1].Value));
+                break;
+
+            case EventType.RandomPosition:
+                output = new RandomPositionEvent(data.startTime, data.duration, data.interval, pattern, Convert.ToSingle(data.additionalParams[0].Value), Convert.ToSingle(data.additionalParams[1].Value), (RectTransform.Axis)Convert.ToInt32(data.additionalParams[2].Value));
+                break;
+
+            default:
+                throw new ArgumentException("Invalid event type");
+        }
+
+        return output;
     }
 
-    /// <summary>
-    /// Checks the base properties (start time, duration, interval, and pattern) of both events and returns true if they are equal
-    /// </summary>
-    /// <param name="event1"></param>
-    /// <param name="event2"></param>
-    /// <returns> true if the base properties of both events are the same, false otherwise </returns>
-    public static bool AreBasePropertiesEqual(BulletEvent event1, BulletEvent event2)
+    public static List<SerializableBulletEventData> DeserializeBulletEventArray(string json)
     {
-        return (event1._startTime == event2._startTime) && (event1._duration == event2._duration) && (event1._interval == event2._interval) && (event1._pattern == event2._pattern);
-    }
-}
+        List<SerializableBulletEventData> temp = UnityNewtonsoftJsonSerializer.instance.Deserialize<List<SerializableBulletEventData>>(json);
+        List<SerializableBulletEventData> output = new List<SerializableBulletEventData>();
 
-//Class for a bullet event that is a combination of two other event types
-[EventDomain(EventDomain.Both)]
-public class CombinedEvent : BulletEvent
-{
-    BulletEvent _event1;
-    BulletEvent _event2;
-
-    public CombinedEvent(BulletEvent event1, BulletEvent event2)
-    {
-        if (!AreBasePropertiesEqual(event1, event2))
+        foreach (SerializableBulletEventData bEvent in temp)
         {
-            throw new ArgumentException("Cannot combine Events that don't have the same base properties.");
-        }
-        _startTime = event1._startTime;
-        _duration = event1._duration;
-        _interval = event1._interval;
-        _pattern = event1._pattern;
-        _event1 = event1;
-        _event2 = event2;
-    }
+            switch (bEvent.pattern.patternType)
+            {
+                case PatternType.Single:
+                    bEvent.pattern = new BulletPattern.SerializableBulletPatternData<SinglePattern>(bEvent.pattern.spawnPoint, bEvent.pattern.bulletType, bEvent.pattern.direction, bEvent.pattern.additionalParams);
+                    break;
 
-    protected internal override void AlterPattern()
-    {
-        _event1.AlterPattern();
-        _event2.AlterPattern();
+                case PatternType.Ring:
+                    bEvent.pattern = new BulletPattern.SerializableBulletPatternData<RingPattern>(bEvent.pattern.spawnPoint, bEvent.pattern.bulletType, bEvent.pattern.direction, bEvent.pattern.additionalParams);
+                    break;
+
+                case PatternType.RingWithGap:
+                    bEvent.pattern = new BulletPattern.SerializableBulletPatternData<RingWithGapPattern>(bEvent.pattern.spawnPoint, bEvent.pattern.bulletType, bEvent.pattern.direction, bEvent.pattern.additionalParams);
+                    break;
+
+                case PatternType.Line:
+                    bEvent.pattern = new BulletPattern.SerializableBulletPatternData<LinePattern>(bEvent.pattern.spawnPoint, bEvent.pattern.bulletType, bEvent.pattern.direction, bEvent.pattern.additionalParams);
+                    break;
+
+                case PatternType.LineWithGap:
+                    bEvent.pattern = new BulletPattern.SerializableBulletPatternData<LineWithGapPattern>(bEvent.pattern.spawnPoint, bEvent.pattern.bulletType, bEvent.pattern.direction, bEvent.pattern.additionalParams);
+                    break;
+            }
+
+            switch (bEvent.eventType)
+            {
+                case EventType.Basic:
+                    output.Add(new SerializableBulletEventData<BasicEvent>(bEvent.startTime, bEvent.duration, bEvent.interval, bEvent.pattern, bEvent.additionalParams));
+                    break;
+
+                case EventType.Spiral:
+                    output.Add(new SerializableBulletEventData<SpiralEvent>(bEvent.startTime, bEvent.duration, bEvent.interval, bEvent.pattern, bEvent.additionalParams));
+                    break;
+
+                case EventType.Targeted:
+                    output.Add(new SerializableBulletEventData<TargetedEvent>(bEvent.startTime, bEvent.duration, bEvent.interval, bEvent.pattern, bEvent.additionalParams));
+                    break;
+
+                case EventType.RandomDirection:
+                    output.Add(new SerializableBulletEventData<RandomDirectionEvent>(bEvent.startTime, bEvent.duration, bEvent.interval, bEvent.pattern, bEvent.additionalParams));
+                    break;
+
+                case EventType.RandomPosition:
+                    output.Add(new SerializableBulletEventData<RandomPositionEvent>(bEvent.startTime, bEvent.duration, bEvent.interval, bEvent.pattern, bEvent.additionalParams));
+                    break;
+            }
+        }
+
+        return output;
     }
 }

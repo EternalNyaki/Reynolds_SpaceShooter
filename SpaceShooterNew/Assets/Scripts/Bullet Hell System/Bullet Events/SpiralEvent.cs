@@ -6,20 +6,6 @@ using UnityEngine;
 [EventDomain(EventDomain.Direction), EventType(EventType.Spiral)]
 public class SpiralEvent : BulletEvent
 {
-#if UNITY_EDITOR
-    //Public interface to properties for custom inspector
-    //For all functional purposes these DO NOT EXIST
-
-    /// <summary>
-    /// EDITOR-ONLY interface for change in angle (in degrees)
-    /// </summary>
-    public float deltaAngle
-    {
-        get { return _deltaAngle; }
-        set { _deltaAngle = value; }
-    }
-#endif
-
     //Amount to rotate the pattern by each cycle
     protected float _deltaAngle;
 
@@ -32,11 +18,11 @@ public class SpiralEvent : BulletEvent
         _deltaAngle = 0f;
     }
 
-    public SpiralEvent(float startTime, float duration, float frequency, BulletPattern pattern, float deltaAngle)
+    public SpiralEvent(float startTime, float duration, float interval, BulletPattern pattern, float deltaAngle)
     {
         _startTime = startTime;
         _duration = duration;
-        _interval = 1 / frequency;
+        _interval = interval;
         _pattern = pattern;
         _deltaAngle = deltaAngle;
 
@@ -44,7 +30,7 @@ public class SpiralEvent : BulletEvent
         _pattern.direction -= _deltaAngle;
     }
 
-    protected internal override void AlterPattern()
+    protected override void AlterPattern()
     {
         _pattern.direction += _deltaAngle;
     }

@@ -21,7 +21,7 @@ public class BulletHellManager : MonoBehaviour
     void Start()
     {
         selectedBullet = bulletPrefabs[0];
-        selectedPattern = new SinglePattern(transform, selectedBullet, direction);
+        selectedPattern = new SinglePattern(transform, Vector2.zero, selectedBullet, direction);
         selectedEvent = new BasicEvent(0f, 10f, 2f, selectedPattern);
     }
 
@@ -35,27 +35,27 @@ public class BulletHellManager : MonoBehaviour
         switch (value)
         {
             case 0:
-                selectedPattern = new SinglePattern(transform, selectedBullet, direction);
+                selectedPattern = new SinglePattern(transform, Vector2.zero, selectedBullet, direction);
                 break;
 
             case 1:
-                selectedPattern = new RingPattern(transform, selectedBullet, direction, density);
+                selectedPattern = new RingPattern(transform, Vector2.zero, selectedBullet, direction, density);
                 break;
 
             case 2:
-                selectedPattern = new RingWithGapPattern(transform, selectedBullet, direction, density * 5, ringGapSize);
+                selectedPattern = new RingWithGapPattern(transform, Vector2.zero, selectedBullet, direction, density * 5, ringGapSize);
                 break;
 
             case 3:
-                selectedPattern = new LinePattern(transform, selectedBullet, direction, 1, length);
+                selectedPattern = new LinePattern(transform, Vector2.zero, selectedBullet, direction, 1, length);
                 break;
 
             case 4:
-                selectedPattern = new LineWithGapPattern(transform, selectedBullet, direction, density, length, gapPosition, lineGapSize);
+                selectedPattern = new LineWithGapPattern(transform, Vector2.zero, selectedBullet, direction, density, length, gapPosition, lineGapSize);
                 break;
 
             default:
-                selectedPattern = new SinglePattern(transform, selectedBullet, direction);
+                selectedPattern = new SinglePattern(transform, Vector2.zero, selectedBullet, direction);
                 break;
         }
 
@@ -84,11 +84,6 @@ public class BulletHellManager : MonoBehaviour
 
             case 4:
                 selectedEvent = new RandomPositionEvent(0f, 10f, 2f, selectedPattern, -5f, 5f, RectTransform.Axis.Horizontal);
-                break;
-
-            case 5:
-                RandomPositionEvent randomPositionEvent = new RandomPositionEvent(0f, 10f, 2f, selectedPattern, -5f, 5f, RectTransform.Axis.Horizontal);
-                selectedEvent = BulletEvent.CombineEvents(randomPositionEvent, BulletEvent.CloneBaseValues(randomPositionEvent, new TargetedEvent(0f, 10f, 2f, selectedPattern, target)));
                 break;
 
             default:

@@ -3,6 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum BulletType
+{
+    Straight,
+    Curved,
+    Targeted,
+    Pathed
+}
+
 //Base class for bullet movement scripts
 public abstract class BulletMovement : MonoBehaviour
 {

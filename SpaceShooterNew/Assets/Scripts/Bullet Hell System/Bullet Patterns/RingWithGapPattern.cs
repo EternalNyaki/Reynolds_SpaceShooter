@@ -14,7 +14,7 @@ public class RingWithGapPattern : RingPattern
         gapSize = 0f;
     }
 
-    public RingWithGapPattern(Transform spawnPoint, GameObject bulletPrefab, float direction, int density, float gapSize) : base(spawnPoint, bulletPrefab, direction, density)
+    public RingWithGapPattern(Transform spawnPoint, Vector2 offset, GameObject bulletPrefab, float direction, int density, float gapSize) : base(spawnPoint, offset, bulletPrefab, direction, density)
     {
         this.gapSize = gapSize;
     }

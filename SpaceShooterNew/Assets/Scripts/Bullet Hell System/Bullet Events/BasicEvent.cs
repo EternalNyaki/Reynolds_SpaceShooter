@@ -16,11 +16,11 @@ public class BasicEvent : BulletEvent
         _pattern = null;
     }
 
-    public BasicEvent(float startTime, float duration, float frequency, BulletPattern pattern)
+    public BasicEvent(float startTime, float duration, float interval, BulletPattern pattern)
     {
         _startTime = startTime;
         _duration = duration;
-        _interval = 1 / frequency;
+        _interval = interval;
         _pattern = pattern;
     }
 }

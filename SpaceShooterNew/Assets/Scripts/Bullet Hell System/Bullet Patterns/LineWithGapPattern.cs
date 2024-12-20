@@ -15,7 +15,7 @@ public class LineWithGapPattern : LinePattern
         gapSize = 0f;
     }
 
-    public LineWithGapPattern(Transform spawnPoint, GameObject bulletPrefab, float direction, int density, float length, float gapPosition, float gapSize) : base(spawnPoint, bulletPrefab, direction, density, length)
+    public LineWithGapPattern(Transform spawnPoint, Vector2 offset, GameObject bulletPrefab, float direction, int density, float length, float gapPosition, float gapSize) : base(spawnPoint, offset, bulletPrefab, direction, density, length)
     {
         //Gap position is stored in the offset for more intuitive interaction with position-altering events
         this.offset.x = gapPosition;

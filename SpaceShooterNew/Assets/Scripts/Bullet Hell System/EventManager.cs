@@ -4,19 +4,20 @@ using UnityEngine;
 
 public class EventManager : Singleton<EventManager>
 {
-    public BulletHellSequence sequence;
+    public TextAsset bulletEventSequence;
+    public Transform target;
+    public GameObject bulletPrefab;
 
     private BulletEvent[] _events;
 
     // Start is called before the first frame update
     void Start()
     {
-        foreach (BulletEvent bEvent in _events) StartCoroutine(bEvent.Run());
-    }
+        var eventSequenceData = BulletEvent.DeserializeBulletEventArray(bulletEventSequence.text);
+        List<BulletEvent> temp = new List<BulletEvent>();
+        eventSequenceData.ForEach(e => temp.Add(BulletEvent.FromEventData(e, transform, target, bulletPrefab)));
+        _events = temp.ToArray();
 
-    // Update is called once per frame
-    void Update()
-    {
-
+        foreach (BulletEvent e in _events) StartCoroutine(e.Run());
     }
 }
